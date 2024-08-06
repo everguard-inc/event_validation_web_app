@@ -1,0 +1,3 @@
+# For futher separation on local and production needs
+
+-r requirements/base.txt
