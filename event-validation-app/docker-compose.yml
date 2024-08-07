@@ -1,28 +1,55 @@
 version: "3.9"
 
+x-common-env-variables: &common-env-variables
+  DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+  DEBUG: 'True'
+
+x-db-config: &db-config
+  DB-NAME: ${DB_NAME}
+  DB_USER: ${DB_USER}
+  DB_PASSWORD: ${DB_PASSWORD}
+  DB_HOST: ${DB_HOST}
+  DB_PORT: ${DB_PORT}
+
+
 services:
   db:
     image: postgres:15
     volumes:
       - database:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=event_app
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
-      - DB_HOST=db
-        DB_PORT=5432
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5433:5432"
+    networks:
+      - backend
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "exec invoke devStart"
+    environment:
+      <<: [*common-env-variables, *db-config]
     volumes:
       - .:/code
     ports:
       - "8000:8000"
     depends_on:
       - db
+    networks:
+      - backend
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - 8080:8080
+    networks:
+      - backend
 
 volumes:
   database:
+
+networks:
+  backend:
