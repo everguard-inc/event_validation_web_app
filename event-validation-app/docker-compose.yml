@@ -1,8 +1,6 @@
-version: "3.9"
-
 x-common-env-variables: &common-env-variables
   DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
-  DEBUG: 'True'
+  DEBUG: "True"
 
 x-db-config: &db-config
   DB-NAME: ${DB_NAME}
@@ -10,7 +8,6 @@ x-db-config: &db-config
   DB_PASSWORD: ${DB_PASSWORD}
   DB_HOST: ${DB_HOST}
   DB_PORT: ${DB_PORT}
-
 
 services:
   db:

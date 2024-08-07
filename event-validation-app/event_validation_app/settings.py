@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # created apps
     'users',
+    'events',
 ]
 
 MIDDLEWARE = [
@@ -75,7 +76,6 @@ WSGI_APPLICATION = 'event_validation_app.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
