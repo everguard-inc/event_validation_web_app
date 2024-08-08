@@ -9,6 +9,7 @@ class ProjectAdmin(admin.ModelAdmin):
     fields = ('name', 'validation_guide_link')
     list_display = ('name', 'validation_guide_link')
     ordering = ('id', )
+    readonly_fields = ('id', )
 
 
 @admin.register(Tag)
@@ -16,6 +17,7 @@ class TagAdmin(admin.ModelAdmin):
     fields = ('name', 'project')
     list_display = ('name', 'project')
     ordering = ('id', )
+    readonly_fields = ('id', )
 
 
 @admin.register(Event)
@@ -27,7 +29,7 @@ class EventAdmin(admin.ModelAdmin):
                 'uid',
                 'link',
                 'cam_uid',
-                'datatime',
+                'datetime',
                 'project',
             )
         }),
@@ -57,6 +59,7 @@ class EventAdmin(admin.ModelAdmin):
     list_filter = ('portal_status', 'internal_status')
     search_fields = ('uid', 'project')
     ordering = ('-datetime', 'id')
+    readonly_fields = ('id', )
 
 
 @admin.register(EventDownloadBatch)
@@ -64,3 +67,4 @@ class EventDownloadBatchAdmin(admin.ModelAdmin):
     list_display = ('requester', 'link', 'status')
     list_filter = ('status', )
     ordering = ('id', )
+    readonly_fields = ('id', )

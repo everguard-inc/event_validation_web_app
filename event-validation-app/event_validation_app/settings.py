@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # third party libraries
+    'django_filters',
     'rest_framework',
     'rest_framework_simplejwt',
 
