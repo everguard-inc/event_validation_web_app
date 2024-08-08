@@ -9,3 +9,4 @@ RUN pip install -r base.txt
 
 WORKDIR /code
 COPY . .
+RUN python manage.py collectstatic --noinput

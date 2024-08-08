@@ -3,21 +3,21 @@ x-common-env-variables: &common-env-variables
   DEBUG: "True"
 
 x-db-config: &db-config
-  DB-NAME: ${DB_NAME}
-  DB_USER: ${DB_USER}
-  DB_PASSWORD: ${DB_PASSWORD}
-  DB_HOST: ${DB_HOST}
-  DB_PORT: ${DB_PORT}
+  DB_NAME: ${POSTGRES_DB}
+  DB_USER: ${POSTGRES_USER}
+  DB_PASSWORD: ${POSTGRES_PASSWORD}
+  DB_HOST: ${POSTGRES_HOST}
+  DB_PORT: ${POSTGRES_PORT}
 
 services:
   db:
     image: postgres:15
     volumes:
-      - database:/var/lib/postgresql/data
+      - events_db:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5433:5432"
     networks:
@@ -46,7 +46,7 @@ services:
       - backend
 
 volumes:
-  database:
+  events_db:
 
 networks:
   backend:
