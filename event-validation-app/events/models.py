@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+
+from events.querysets import EventsQuerySet
 from utils import EventStatus, BatchStatus
 
 
@@ -30,6 +32,8 @@ class Event(models.Model):
     major_tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, blank=True, related_name="major_tag_set")
     minor_tag1 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, blank=True, related_name="minor_tag1_set")
     minor_tag2 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, blank=True, related_name="minor_tag2_set")
+
+    objects = EventsQuerySet.as_manager()
 
 
 class EventDownloadBatch(models.Model):

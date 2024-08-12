@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  <div style="width: 100%; overflow-x: auto;">
+<table class="table" id="models_table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Validation guide</th>
+          <th>Total events</th>
+          <th>TP (internal)</th>
+          <th>FP (internal)</th>
+          <th>TN (internal)</th>
+          <th>FN (internal)</th>
+
+          <th>TP (portal)</th>
+          <th>FP (portal)</th>
+          <th>TN (portal)</th>
+          <th>FN (portal)</th>
+          <th>Not validated</th>
+          <th>Last validated Event datetime</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>{{ project.name }}</td>
+            <td>{{ project.validation_guide_link }}</td>
+            <td>{{ total }}</td>
+            <td>{{ tp_count_internal }} ({{ tp_percent_internal }} %)</td>
+            <td>{{ fp_count_internal }} ({{ fp_percent_internal }} %)</td>
+            <td>{{ tn_count_internal }} ({{ tn_percent_internal }} %)</td>
+            <td>{{ fn_count_internal }} ({{ fn_percent_internal }} %)</td>
+            <td>{{ tp_count_portal }} ({{ tp_percent_portal }} %)</td>
+            <td>{{ fp_count_portal }} ({{ fp_percent_portal }} %)</td>
+            <td>{{ tn_count_portal }} ({{ tn_percent_portal }} %)</td>
+            <td>{{ fn_count_portal }} ({{ fn_percent_portal }} %)</td>
+            <td>{{ not_validated }} ({{ not_validated_percent }} %)</td>
+            <td>{{ last_validated_event_datetime }}</td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+</div>
+
+{% endblock %}

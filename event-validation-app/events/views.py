@@ -1,34 +1,48 @@
-from rest_framework.filters import OrderingFilter
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, DetailView
 
-from events.models import Event
-from events.serializers import EventSerializer
+from events.models import Project
 
 
-# Create your views here.
-class EventsListView(ReadOnlyModelViewSet):
-    queryset = Event.objects.select_related("project", "major_tag", "minor_tag1", "minor_tag2")
-    serializer_class = EventSerializer
-    permission_classes = (IsAuthenticated, )
-    pagination_class = None
-    filter_backends = [OrderingFilter]
-    ordering = ('id', )
+class ProjectListView(ListView):
+    template_name = 'project-list.html'
+    model = Project
+    context_object_name = 'projects'
 
-    def list(self, request, *args, **kwargs):
-        qs = self.filter_queryset(self.get_queryset())
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-        if query_params := request.query_params:
+        return context
 
-            if project_name := query_params.get("project_name"):
-                qs = qs.filter(project__name=project_name)
 
-            if start_datetime := query_params.get("start_datetime"):
-                qs = qs.filter(datetime__gte=start_datetime)
+class ProjectDetailView(DetailView):
+    template_name = 'project-detail.html'
+    model = Project
+    context_object_name = 'project'
+    queryset = Project.objects.prefetch_related('event_set')
+    pk_url_kwarg = 'pk'
 
-            if end_datetime := query_params.get("end_datetime"):
-                qs = qs.filter(datetime__lte=end_datetime)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project_id = self.kwargs.get('pk')
 
-        serializer = self.get_serializer(qs, many=True)
-        return Response(serializer.data)
+        project = get_object_or_404(Project, id=project_id)
+        context['project'] = project
+
+        qs = project.event_set
+
+        if query_params := self.request.GET:
+
+            if start_date := query_params.get('start_date'):
+                qs = qs.filter(datetime__gte=start_date)
+
+            if end_date := query_params.get('end_date'):
+                qs = qs.filter(datetime__lte=end_date)
+
+        totals = qs.totals_count()
+        last_validated_event_datetime = qs.last_validated_event_datetime()
+
+        context.update(**totals)
+        context['last_validated_event_datetime'] = last_validated_event_datetime
+        print(context)
+        return context
