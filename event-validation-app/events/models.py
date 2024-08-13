@@ -15,7 +15,7 @@ class Project(TimeStampedModel, SoftDeletableModel):
     validation_guide_link = models.CharField(max_length=200)
 
     def get_validation_page_url(self):
-        return reverse('project-events', kwargs={'project_id': self.pk})
+        return reverse('project-events', kwargs={'slug': self.pk})
 
     def save(self, *args, **kwargs):
         if not self.slug:

@@ -18,7 +18,7 @@
                 {% for obj in projects %}
                     <tr>
                         <td>{{ obj.id }}</td>
-                        <td><a href="{% url 'project-detail' pk=obj.pk %}">{{ obj.name}}</a></td>
+                        <td><a href="{% url 'project-detail' pk=obj.slug %}">{{ obj.name }}</a></td>
                         <td>{{ obj.event_set.last_validated_event_datetime }}</td>
                         <td>validation page link</td>
                         <td>{{ obj.validation_guide_link }}</td>
