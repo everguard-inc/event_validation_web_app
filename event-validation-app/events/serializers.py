@@ -7,7 +7,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ('name', 'validation_guide_link')
+        fields = ('slug', 'name', 'validation_guide_link')
 
 
 class TagSerializer(serializers.ModelSerializer):
