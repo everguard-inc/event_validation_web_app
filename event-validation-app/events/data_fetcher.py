@@ -25,7 +25,7 @@ class DataFetcher:
         self.refresh_token = None
         self.end_datetime = timezone.now()
         self.start_datetime = self.end_datetime - timezone.timedelta(days=2)
-
+        self.existed_events_uids = self._get_existed_events_uids()
 
     @property
     def username(self):
@@ -79,17 +79,16 @@ class DataFetcher:
 
         return data
 
-    def get_existed_events_uids(self) -> set:
+    def _get_existed_events_uids(self) -> set:
         event_uids_set = set(
             Event.objects.filter(datetime__range=[self.start_datetime, self.end_datetime]).values_list('uid', flat=True)
         )
         return event_uids_set
 
     def migrate_data(self, data: list) -> None:
-        existed_events_uids = self.get_existed_events_uids()
 
         for item in data:
-            if item.get('uid') in existed_events_uids:
+            if item.get('uid') in self.existed_events_uids:
                 continue
 
             if datetime := item.get('datetime'):
