@@ -4,24 +4,30 @@
 <div class="container-fluid">
     <div style="width: 100%; overflow-x: auto;">
         <h1>Projects</h1>
-        <table>
-            <thead>
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
                 <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Last validated event datetime</th>
-                <th>Validation Page</th>
-                <th>Validation Guide Link</th>
-            </tr>
+                    <th>Name</th>
+                    <th>Last validated event datetime</th>
+                    <th>Validation page</th>
+                    <th>Validation guide link</th>
+                </tr>
             </thead>
             <tbody>
                 {% for obj in projects %}
                     <tr>
-                        <td>{{ obj.id }}</td>
-                        <td><a href="{% url 'project-detail' slug=obj.slug %}">{{ obj.name }}</a></td>
+                        <td>
+                            <a href="{% url 'project-detail' slug=obj.slug %}">
+                                {{ obj.name }}
+                            </a>
+                        </td>
                         <td>{{ obj.event_set.last_validated_event_datetime }}</td>
-                        <td>validation page link</td>
-                        <td>{{ obj.validation_guide_link }}</td>
+                        <td><a href="{{ obj.get_validation_page_url }}" target="_blank">Page Link</a></td>
+                        <td>
+                            <a href="{{ obj.validation_guide_link }}" target="_blank">
+                                Guide Link
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

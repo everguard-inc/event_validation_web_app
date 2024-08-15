@@ -31,7 +31,7 @@
             {% for object in events %}
                 <tr id="object-{{ object.id }}">
                     <td>{{ object.datetime }}</td>
-                    <td>{{ object.link }}</td>
+                    <td><a href="{{ object.link }}"></a>{{ object.link }}</td>
                     <td>{{ object.portal_comment }}</td>
                     <td>{{ object.portal_status }}</td>
                     <td>
@@ -91,73 +91,10 @@
 </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'js/events/ajax-update.js' %}"></script>
 <script>
-    var $j = jQuery.noConflict();
-
-    $j(document).ready(function(){
-
-        $j('.ajax-update').each(function() {
-                $j(this).data('original-value', $j(this).val());
-            });
-
-        $j('.ajax-update').on('blur', function() {
-            var element = $j(this);
-            var value = element.val();
-            var originalValue = element.data('original-value');
-            var field = element.data('field');
-            var id = element.data('id');
-
-            // Only send AJAX if the value has changed
-            if (value !== originalValue) {
-                $j.ajax({
-                    url: '{% url "event-update" 0 %}'.replace('0', id),
-                    type: 'POST',
-                    data: {
-                        'name': field,
-                        'value': value,
-                        'csrfmiddlewaretoken': '{{ csrf_token }}'
-                    },
-                    success: function(response) {
-                        $j(element).data('original-value', value);
-                    },
-                    error: function(response) {
-                        console.log('Error updating field:', response);
-                    }
-                });
-            } else {
-                console.log('No changes detected, request not sent.');
-            }
-        });
-
-        $j('.ajax-update-select').on('change', function() {
-            var element = $j(this);
-            var value = element.val();
-            var originalValue = element.data('original-value');
-            var field = element.data('field');
-            var id = element.data('id');
-
-            // Only send AJAX if the value has changed
-            if (value !== originalValue) {
-                $j.ajax({
-                    url: '{% url "event-update" 0 %}'.replace('0', id),
-                    type: 'POST',
-                    data: {
-                        'name': field,
-                        'value': value,
-                        'csrfmiddlewaretoken': '{{ csrf_token }}'
-                    },
-                    success: function(response) {
-                        // Update the stored original value after a successful update
-                        $j(element).data('original-value', value);
-                    },
-                    error: function(response) {
-                        console.log('Error updating field:', response);
-                    }
-                });
-            } else {
-                console.log('No changes detected, request not sent.');
-            }
-        });
-    });
+    var csrfToken = '{{ csrf_token }}';
+    var eventUpdateUrl = '{% url "event-update" 0 %}';
+    initializeAjaxUpdate(csrfToken, eventUpdateUrl);
 </script>
 {% endblock %}

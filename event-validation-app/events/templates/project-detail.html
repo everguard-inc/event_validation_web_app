@@ -1,57 +1,58 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form method="get" class="date-range-form">
-    <label for="start_date">Start Date:</label>
-    <input type="date" id="start_date" name="start_date" value="{{ request.GET.start_date }}">
-
-    <label for="end_date">End Date:</label>
-    <input type="date" id="end_date" name="end_date" value="{{ request.GET.end_date }}">
-
-    <button type="submit">Filter</button>
-</form>
 <div class="container-fluid">
-  <div style="width: 100%; overflow-x: auto;">
-<table class="table" id="models_table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Validation page</th>
-          <th>Validation guide</th>
-          <th>Total events</th>
-          <th>TP (internal)</th>
-          <th>FP (internal)</th>
-          <th>TN (internal)</th>
-          <th>FN (internal)</th>
+    <!-- Date Range Filter Form -->
+    <form method="get" class="date-range-form mb-4">
+        <div class="form-row align-items-end">
+            <div class="col-md-4">
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" value="{{ request.GET.start_date }}" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date" value="{{ request.GET.end_date }}" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary mt-4">Filter</button>
+            </div>
+        </div>
+    </form>
 
-          <th>TP (portal)</th>
-          <th>FP (portal)</th>
-          <th>TN (portal)</th>
-          <th>FN (portal)</th>
-          <th>Not validated</th>
-          <th>Last validated Event datetime</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-            <td>{{ project.name }}</td>
-            <td><a href="{{ project.get_validation_page_url }}">Validation Page</a></td>
-            <td>{{ project.validation_guide_link }}</td>
-            <td>{{ total }}</td>
-            <td>{{ tp_count_internal }} ({{ tp_percent_internal }} %)</td>
-            <td>{{ fp_count_internal }} ({{ fp_percent_internal }} %)</td>
-            <td>{{ tn_count_internal }} ({{ tn_percent_internal }} %)</td>
-            <td>{{ fn_count_internal }} ({{ fn_percent_internal }} %)</td>
-            <td>{{ tp_count_portal }} ({{ tp_percent_portal }} %)</td>
-            <td>{{ fp_count_portal }} ({{ fp_percent_portal }} %)</td>
-            <td>{{ tn_count_portal }} ({{ tn_percent_portal }} %)</td>
-            <td>{{ fn_count_portal }} ({{ fn_percent_portal }} %)</td>
-            <td>{{ not_validated }} ({{ not_validated_percent }} %)</td>
-            <td>{{ last_validated_event_datetime }}</td>
-        </tr>
-      </tbody>
-    </table>
-</div>
-</div>
+    <!-- Project Information -->
+    <h2>{{ project.name }}</h2>
+    <p>
+        <strong>Validation Page:</strong>
+        <a href="{{ project.get_validation_page_url }}">Go to Validation Page</a>
+    </p>
+    <p>
+        <strong>Validation Guide:</strong>
+        <a href="{{ project.validation_guide_link }}" target="_blank">Open Validation Guide</a>
+    </p>
+    <p><strong>Last Validated Event DateTime:</strong> {{ last_validated_event_datetime }}</p>
+    <p><strong>Total Events:</strong> {{ total }}</p>
+    <p><strong>Not Validated:</strong> {{ not_validated }} ({{ not_validated_percent }}%)</p>
+    <hr>
 
+    <!-- Metrics Section -->
+    <div class="row">
+        <!-- Internal Metrics -->
+        <div class="col-md-4">
+            <h4>Internal Metrics</h4>
+            <p><strong>True Positives:</strong> {{ tp_count_internal }} ({{ tp_percent_internal }}%)</p>
+            <p><strong>False Positives:</strong> {{ fp_count_internal }} ({{ fp_percent_internal }}%)</p>
+            <p><strong>True Negatives:</strong> {{ tn_count_internal }} ({{ tn_percent_internal }}%)</p>
+            <p><strong>False Negatives:</strong> {{ fn_count_internal }} ({{ fn_percent_internal }}%)</p>
+        </div>
+
+        <!-- Portal Metrics -->
+        <div class="col-md-4">
+            <h4>Portal Metrics</h4>
+            <p><strong>True Positives:</strong> {{ tp_count_portal }} ({{ tp_percent_portal }}%)</p>
+            <p><strong>False Positives:</strong> {{ fp_count_portal }} ({{ fp_percent_portal }}%)</p>
+            <p><strong>True Negatives:</strong> {{ tn_count_portal }} ({{ tn_percent_portal }}%)</p>
+            <p><strong>False Negatives:</strong> {{ fn_count_portal }} ({{ fn_percent_portal }}%)</p>
+        </div>
+    </div>
+</div>
 {% endblock %}
