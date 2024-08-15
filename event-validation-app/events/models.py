@@ -41,10 +41,14 @@ class Event(TimeStampedModel, SoftDeletableModel):
     portal_comment = models.CharField(max_length=2000, null=True, blank=True)
     internal_comment = models.CharField(max_length=2000, null=True, blank=True)
     taken_for_annotation = models.BooleanField(default=False, help_text="Events taken for annotation should not be used for model evaluation")
-    cam_uid = models.CharField(max_length=200, help_text="The camera uid from which the event was captured from", null=True, blank=True)
     validated = models.BooleanField(default=False)
     portal_status = models.CharField(max_length=200, choices=EventStatus.choices, null=True, blank=True)
     internal_status = models.CharField(max_length=200, choices=EventStatus.choices, null=True, blank=True)
+
+    cam_uid = models.CharField(max_length=200, help_text="The camera uid from which the event was captured from", null=True, blank=True)
+    zone_uid = models.CharField(max_length=200, help_text="The zone uid where the event was captured from", null=True, blank=True)
+    area_uid = models.CharField(max_length=200, help_text="The area uid where the event was captured from", null=True, blank=True)
+
     # Foreign fields
     project = models.ForeignKey(Project, to_field='slug', on_delete=models.SET_NULL, null=True, blank=True)
     major_tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, blank=True, related_name="major_tag_set")

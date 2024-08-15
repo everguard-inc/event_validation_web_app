@@ -23,7 +23,7 @@ services:
     networks:
       - backend
 
-  web:
+  web: &web
     build: .
     command: bash -c "exec invoke devStart"
     environment:
@@ -37,6 +37,51 @@ services:
     networks:
       - backend
 
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-server:/.data:rw
+    networks:
+      - backend
+      - redis-network
+
+  celery-worker:
+    <<: *web
+    container_name: event-app-celery-worker
+    command: celery -A event_validation_app worker --loglevel=info
+    environment:
+      <<: [*common-env-variables, *db-config]
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+    ports: []
+    volumes:
+      - .:/code
+    networks:
+      - redis-network
+      - backend
+    depends_on:
+      - redis
+      - db
+
+  celery-beat:
+    <<: *web
+    container_name: event-app-celery-beat
+    command: celery -A event_validation_app beat --loglevel=info
+    environment:
+      <<: [ *common-env-variables, *db-config ]
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+    ports: []
+    volumes:
+      - .:/code
+    networks:
+      - redis-network
+      - backend
+    depends_on:
+      - redis
+      - db
+
   adminer:
     image: adminer
     container_name: adminer
@@ -47,6 +92,8 @@ services:
 
 volumes:
   events_db:
+  redis-server:
 
 networks:
   backend:
+  redis-network:

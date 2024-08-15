@@ -1,5 +1,7 @@
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 
 from django.views import View
 
@@ -12,6 +14,7 @@ from utils import EventStatus
 from utils.functions import get_percentage_values
 
 
+@method_decorator(login_required, name='dispatch')
 class ProjectListView(ListView):
     template_name = 'project-list.html'
     model = Project
