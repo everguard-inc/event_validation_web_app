@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<form method="get" class="date-range-form">
+    <label for="start_date">Start Date:</label>
+    <input type="date" id="start_date" name="start_date" value="{{ request.GET.start_date }}">
+
+    <label for="end_date">End Date:</label>
+    <input type="date" id="end_date" name="end_date" value="{{ request.GET.end_date }}">
+
+    <button type="submit">Filter</button>
+</form>
+<div class="container-fluid">
+  <div style="width: 100%; overflow-x: auto;">
+    <table>
+        <thead>
+            <tr>
+                <th>Datetime</th>
+                <th>Link</th>
+                <th>Portal Status</th>
+                <th>Portal Comment</th>
+                <th>Internal Comment</th>
+                <th>Internal Status</th>
+                <th>Major Tag</th>
+                <th>Minor Tag 1</th>
+                <th>Minor Tag 2</th>
+            </tr>
+        </thead>
+        <tbody id="object-list">
+            {% for object in events %}
+                <tr id="object-{{ object.id }}">
+                    <td>{{ object.datetime }}</td>
+                    <td><a href="{{ object.link }}"></a>{{ object.link }}</td>
+                    <td>{{ object.portal_comment }}</td>
+                    <td>{{ object.portal_status }}</td>
+                    <td>
+                        <input type="text" value="{{ object.internal_comment }}"
+                               data-id="{{ object.id }}"
+                               data-field="internal_comment"
+                               class="ajax-update">
+                    </td>
+                    <td>
+                        <select data-id="{{ object.id }}"
+                                data-field="internal_status"
+                                class="ajax-update-select">
+                            {% for value, display in status_choices %}
+                                <option value="{{ value }}" {% if object.internal_status == value %}selected{% endif %}>
+                                    {{ display }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select data-id="{{ object.id }}"
+                                data-field="major_tag"
+                                class="ajax-update-select">
+                            {% for tag in tags %}
+                                <option value="{{ tag.pk }}" {% if object.major_tag.pk == tag.pk %}selected{% endif %}>
+                                    {{ tag.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select data-id="{{ object.id }}"
+                                data-field="minor_tag1"
+                                class="ajax-update-select">
+                            {% for tag in tags %}
+                                <option value="{{ tag.pk }}" {% if object.minor_tag1.pk == tag.pk %}selected{% endif %}>
+                                    {{ tag.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select data-id="{{ object.id }}"
+                                data-field="minor_tag2"
+                                class="ajax-update-select">
+                            {% for tag in tags %}
+                                <option value="{{ tag.pk }}" {% if object.minor_tag2.pk == tag.pk %}selected{% endif %}>
+                                    {{ tag.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'js/events/ajax-update.js' %}"></script>
+<script>
+    var csrfToken = '{{ csrf_token }}';
+    var eventUpdateUrl = '{% url "event-update" 0 %}';
+    initializeAjaxUpdate(csrfToken, eventUpdateUrl);
+</script>
+{% endblock %}
